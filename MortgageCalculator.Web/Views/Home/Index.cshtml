@@ -1,0 +1,146 @@
+﻿@{
+    ViewBag.Title = "Mortgage Calculator";
+    var activeMortgages = ViewBag.ActiveMortgages as List<MortgageCalculator.Dto.Mortgage>;
+    var mortgageTypes = ViewBag.MortgageTypes as string[];
+}
+
+<h2>Active Mortgages</h2>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Mortgage Type</th>
+            <th>Interest Repayment</th>
+            <th>Effective Start</th>
+            <th>Effective End</th>
+            <th>Terms (Months)</th>
+            <th>Cancellation Fee</th>
+            <th>Establishment Fee</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var mortgage in activeMortgages)
+        {
+            <tr>
+                <td>@mortgage.Name</td>
+                <td>@mortgage.MortgageType</td>
+                <td>@mortgage.InterestRepayment</td>
+                <td>@mortgage.EffectiveStartDate.ToShortDateString()</td>
+                <td>@mortgage.EffectiveEndDate.ToShortDateString()</td>
+                <td>@mortgage.TermsInMonths</td>
+                <td>@mortgage.CancellationFee.ToString("C")</td>
+                <td>@mortgage.EstablishmentFee.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<hr />
+
+<h2>Mortgage Loan Calculator</h2>
+
+<form id="loanCalculatorForm" class="form-horizontal">
+    <div class="form-group">
+        <label for="mortgageType" class="col-md-2 control-label">Mortgage Type</label>
+        <div class="col-md-4">
+            <input id="mortgageType" name="mortgageType" class="form-control" placeholder="Select Mortgage Type" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="loanAmount" class="col-md-2 control-label">Loan Amount</label>
+        <div class="col-md-4">
+            <input id="loanAmount" name="loanAmount" type="number" step="0.01" min="0" class="form-control" placeholder="Enter amount" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="interestRate" class="col-md-2 control-label">Interest Rate (%)</label>
+        <div class="col-md-4">
+            <input id="interestRate" name="interestRate" type="number" step="0.01" min="0" class="form-control" placeholder="Annual interest rate" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="loanDuration" class="col-md-2 control-label">Loan Duration (Years)</label>
+        <div class="col-md-4">
+            <input id="loanDuration" name="loanDuration" type="number" min="1" class="form-control" placeholder="Loan term in years" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-4">
+            <button type="button" id="calculateBtn" class="btn btn-primary">Calculate</button>
+        </div>
+    </div>
+</form>
+
+@*<div id="result" style="display:none;">
+    <h3>Calculation Results</h3>
+    <p>Total Repayment: <span id="totalRepayment"></span></p>
+    <p>Total Interest Paid: <span id="interestPaid"></span></p>
+</div>*@
+
+<!-- Results -->
+<div class="form-group">
+    <div class="col-md-8 col-md-offset-2">
+        <div id="result" class="alert alert-info" style="display:none;"></div>
+    </div>
+</div>
+<br />
+
+@section scripts {
+    <script>
+        $(function () {
+            // Mortgage types autocomplete from server-side array
+            var mortgageTypes = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(mortgageTypes));
+
+            $("#mortgageType").autocomplete({
+                source: mortgageTypes,
+                minLength: 0
+            }).focus(function () {
+                $(this).autocomplete("search");
+            });
+
+            $("#calculateBtn").click(function () {
+                var loanAmount = parseFloat($("#loanAmount").val());
+                var interestRate = parseFloat($("#interestRate").val());
+                var loanDurationYears = parseInt($("#loanDuration").val());
+                var mortgageType = $("#mortgageType").val();
+
+                if (isNaN(loanAmount) || loanAmount <= 0) {
+                    alert("Please enter a valid Loan Amount");
+                    return;
+                }
+                if (isNaN(interestRate) || interestRate <= 0) {
+                    alert("Please enter a valid Interest Rate");
+                    return;
+                }
+                if (isNaN(loanDurationYears) || loanDurationYears <= 0) {
+                    alert("Please enter a valid Loan Duration");
+                    return;
+                }
+
+                // Calculate total repayment and interest
+                var months = loanDurationYears * 12;
+                var monthlyInterestRate = interestRate / 100 / 12;
+
+                // Calculate EMI using formula: E = P * r * (1 + r)^n / ((1 + r)^n - 1)
+                var emi = (loanAmount * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, months)) /
+                          (Math.pow(1 + monthlyInterestRate, months) - 1);
+
+                var totalRepayment = emi * months;
+                var totalInterest = totalRepayment - loanAmount;
+
+                //$("#totalRepayment").text(totalRepayment.toFixed(2));
+                //$("#interestPaid").text(totalInterest.toFixed(2));
+                //$("#result").show();
+
+                // Display results
+                var resultHtml = "<strong>Mortgage Type:</strong> " + mortgageType + "<br/>" +
+                    "<strong>Total Repayment:</strong> $" + totalRepayment.toFixed(2) + "<br/>" +
+                    "<strong>Total Interest Paid:</strong> $" + totalInterest.toFixed(2);
+
+                $("#result").html(resultHtml).show();
+
+            });
+        });
+    </script>
+}

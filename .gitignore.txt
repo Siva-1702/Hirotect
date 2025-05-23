@@ -1,0 +1,66 @@
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio working folder
+.vs/
+
+# ASP.NET temporary files
+**/App_Data/
+**/App_Browsers/
+**/App_Code/
+**/App_WebReferences/
+**/App_LocalResources/
+**/App_GlobalResources/
+
+# VS Code settings
+.vscode/
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user
+
+# Rider
+.idea/
+
+# Logs
+*.log
+
+# Database files
+*.mdf
+*.ldf
+
+# Backup and publish
+*.bak
+*.publish.xml
+
+# NuGet packages
+*.nupkg
+# The packages folder can be ignored because of PackageReference
+**/packages/
+!**/packages/build/
+!**/packages/repositories.config
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Others
+*.dbmdl
+*.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+
+# JetBrains Rider
+.idea/
+
+# Test results
+TestResults/
