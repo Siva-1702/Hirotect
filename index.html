@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loan EMI Calculator</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header class="header">
+      <p class="eyebrow">Loan Tools</p>
+      <h1>Loan EMI Calculator</h1>
+      <p class="subtitle">
+        Estimate your monthly EMI, total interest, and overall repayment in seconds.
+      </p>
+    </header>
+
+    <section class="calculator">
+      <form id="emi-form" class="card" novalidate>
+        <div class="field">
+          <label for="principal">Loan Amount</label>
+          <div class="input-wrapper">
+            <span class="prefix">₹</span>
+            <input type="number" id="principal" name="principal" min="1000" step="100" value="500000" required />
+          </div>
+          <small class="hint">Enter the principal loan amount.</small>
+        </div>
+
+        <div class="field">
+          <label for="rate">Annual Interest Rate</label>
+          <div class="input-wrapper">
+            <input type="number" id="rate" name="rate" min="0" step="0.1" value="8.5" required />
+            <span class="suffix">%</span>
+          </div>
+          <small class="hint">Annual percentage rate (APR).</small>
+        </div>
+
+        <div class="field">
+          <label for="tenure">Loan Tenure</label>
+          <div class="input-group">
+            <input type="number" id="tenure" name="tenure" min="1" step="1" value="5" required />
+            <select id="tenure-unit" name="tenure-unit">
+              <option value="years" selected>Years</option>
+              <option value="months">Months</option>
+            </select>
+          </div>
+          <small class="hint">Choose years or months.</small>
+        </div>
+
+        <button type="submit" class="primary">Calculate EMI</button>
+      </form>
+
+      <aside class="card results" aria-live="polite">
+        <h2>Results</h2>
+        <div class="result-grid">
+          <div>
+            <p class="label">Monthly EMI</p>
+            <p id="emi" class="value">₹0</p>
+          </div>
+          <div>
+            <p class="label">Total Interest</p>
+            <p id="interest" class="value">₹0</p>
+          </div>
+          <div>
+            <p class="label">Total Payment</p>
+            <p id="total" class="value">₹0</p>
+          </div>
+        </div>
+        <div class="breakdown">
+          <div class="bar">
+            <span id="principal-bar">Principal</span>
+            <span id="interest-bar">Interest</span>
+          </div>
+          <div class="legend">
+            <span class="dot principal"></span>
+            <span>Principal</span>
+            <span class="dot interest"></span>
+            <span>Interest</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
